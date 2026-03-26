@@ -30,3 +30,44 @@ def save_result(result):
         if not exists:
             w.writeheader()
         w.writerow(row)
+def load_history():
+    if not os.path.isfile(FILE):
+        return []
+    records=[]
+    with open(FILE,"r",encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            try:
+                row["sensational_flags"]=json.loads(row.get("sensational_flags","[]"))
+                row["professional_markers"]=json.loads(row.get("professional_markers","[]"))
+                row["sources_found"]=json.loads(row.get("sources_found","[]"))
+                row["neutrality_score"]=int(row.get("neutrality_score",0))
+                row["language_breakdown"]={
+                    "emotive_language_pct":int(row.get("emotive_language_pct",0)),
+                    "attributed_claims_pct":int(row.get("attributed_claims_pct",0)),
+                    "absolute_claims_pct":int(row.get("absolute_claims_pct",0)),
+                    "hedged_language_pct":int(row.get("hedged_language_pct",0)),
+                }
+                records.append(row)
+            except (json.JSONDecodeError,ValueError):
+                continue
+    return records
+def clear_history():
+    if os.path.isfile(FILE):
+        os.remove(FILE)
+def export_history(history,path):
+    if not history:
+        return
+    cols=["timestamp","source","input_type","neutrality_score","verdict",
+          "writer_intent_summary","emotive_language_pct","attributed_claims_pct",
+          "absolute_claims_pct","hedged_language_pct"]
+    with open(path,"w",newline="",encoding="utf-8") as f:
+        w=csv.DictWriter(f,fieldnames=cols,extrasaction="ignore")
+        w.writeheader()
+        for rec in history:
+            flat={k:rec.get(k,"") for k in cols}
+            bd=rec.get("language_breakdown",{})
+            flat["emotive_language_pct"]=bd.get("emotive_language_pct",0)
+            flat["attributed_claims_pct"]=bd.get("attributed_claims_pct",0)
+            flat["absolute_claims_pct"]=bd.get("absolute_claims_pct",0)
+            flat["hedged_language_pct"]=bd.get("hedged_language_pct",0)
+            w.writerow(flat)
