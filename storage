@@ -2,4 +2,31 @@ import csv
 import json
 import os
 from datetime import datetime
-
+FILE="history.csv"
+FIELDS=["timestamp","source","input_type","neutrality_score","verdict",
+    "writer_intent_summary","sensational_flags","professional_markers",
+    "sources_found","emotive_language_pct","attributed_claims_pct",
+    "absolute_claims_pct","hedged_language_pct"]
+def save_result(result):
+    exists=os.path.isfile(FILE)
+    bd=result.get("language_breakdown",{})
+    row={
+        "timestamp":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "source":result.get("source","Unknown"),
+        "input_type":result.get("input_type","pasted"),
+        "neutrality_score":result.get("neutrality_score",0),
+        "verdict":result.get("verdict",""),
+        "writer_intent_summary":result.get("writer_intent_summary",""),
+        "sensational_flags":json.dumps(result.get("sensational_flags",[])),
+        "professional_markers":json.dumps(result.get("professional_markers",[])),
+        "sources_found":json.dumps(result.get("sources_found",[])),
+        "emotive_language_pct":bd.get("emotive_language_pct",0),
+        "attributed_claims_pct":bd.get("attributed_claims_pct",0),
+        "absolute_claims_pct":bd.get("absolute_claims_pct",0),
+        "hedged_language_pct":bd.get("hedged_language_pct",0),
+    }
+    with open(FILE,"a",newline="",encoding="utf-8") as f:
+        w=csv.DictWriter(f,fieldnames=FIELDS)
+        if not exists:
+            w.writeheader()
+        w.writerow(row)
