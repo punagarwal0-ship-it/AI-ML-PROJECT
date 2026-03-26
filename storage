@@ -38,11 +38,11 @@ def load_history():
         for row in csv.DictReader(f):
             try:
                 row["sensational_flags"]=json.loads(row.get("sensational_flags","[]"))
-                row["professional_markers"]=json.loads(row.get("professional_markers","[]"))
+                  row["professional_markers"]=json.loads(row.get("professional_markers","[]"))
                 row["sources_found"]=json.loads(row.get("sources_found","[]"))
                 row["neutrality_score"]=int(row.get("neutrality_score",0))
                 row["language_breakdown"]={
-                    "emotive_language_pct":int(row.get("emotive_language_pct",0)),
+                "emotive_language_pct":int(row.get("emotive_language_pct",0)),
                     "attributed_claims_pct":int(row.get("attributed_claims_pct",0)),
                     "absolute_claims_pct":int(row.get("absolute_claims_pct",0)),
                     "hedged_language_pct":int(row.get("hedged_language_pct",0)),
