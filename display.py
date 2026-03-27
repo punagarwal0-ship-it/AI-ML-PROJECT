@@ -88,3 +88,36 @@ def print_result(result):
             print(f"  • {s.get('name','')}  [{s.get('type','')}]  [{s.get('credibility','')}]")
         print()
     print(DIV)
+
+def print_history_table(history):
+    print(f"\n  HISTORY  ({len(history)} records)\n")
+    print(f"  {'#':<4} {'Date':<20} {'Score':<7} {'Verdict':<22} {'Source'}")
+    print(f"  {'─'*4} {'─'*19} {'─'*6} {'─'*21} {'─'*25}")
+    for i,rec in enumerate(history,1):
+        date=rec.get("timestamp","")[:16]
+        score=rec.get("neutrality_score","")
+        verdict=rec.get("verdict","")[:20]
+        source=rec.get("source","")[:30]
+        print(f"  {i:<4} {date:<20} {score:<7} {verdict:<22} {source}")
+
+def print_help():
+    print(f"\n{DIV}")
+    print("  HELP\n")
+    print("  Analyses news articles for professional vs sensational language.")
+    print("  Does NOT measure political bias — measures WRITER INTENT.\n")
+    print("  SCORE RANGES")
+    print("  75-100  Professional   Evidence-based, attributed, measured language")
+    print("  50- 74  Mixed          Some professional markers, some emotive language")
+    print("  30- 49  Sensational    Primarily emotive, few sources, loaded language")
+    print("   0- 29  Propaganda     Near-total manipulation, no attribution\n")
+    print("  SETUP")
+    print("  export ANTHROPIC_API_KEY=your_key_here\n")
+    print("  INSTALL")
+    print("  pip install anthropic requests beautifulsoup4\n")
+    print(DIV)
+
+def print_error(msg):
+    print(f"\n  [!] {msg}\n")
+
+def print_success(msg):
+    print(f"\n  [+] {msg}\n")
