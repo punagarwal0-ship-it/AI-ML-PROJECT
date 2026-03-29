@@ -20,7 +20,7 @@ The tool uses a locally trained DistilBERT model trained on a labelled news data
 
 **Step 1 — Clone the repo**
 ```
-git clone https://github.com/yourusername/news_neutrality.git
+git clone https://github.com/punagarwal0-ship-it/news_neutrality.git
 cd news_neutrality
 ```
 
