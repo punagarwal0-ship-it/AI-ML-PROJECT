@@ -122,5 +122,3 @@ def handle_clear():
         print_success("History cleared.")
     else:
         print("  Cancelled.")
-
-
