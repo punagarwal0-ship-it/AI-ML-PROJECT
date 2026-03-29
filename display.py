@@ -9,7 +9,7 @@ def verdict_tag(score):
     if score>=50: return "MIXED"
     if score>=30: return "SENSATIONAL"
     return "PROPAGANDA"
-  
+
 def score_bar(score,width=40):
     n=int((score/100)*width)
     return f"[{'█'*n+'░'*(width-n)}] {score}/100"
@@ -111,9 +111,9 @@ def print_help():
     print("  30- 49  Sensational    Primarily emotive, few sources, loaded language")
     print("   0- 29  Propaganda     Near-total manipulation, no attribution\n")
     print("  SETUP")
-    print("  export ANTHROPIC_API_KEY=your_key_here\n")
+    print("  export GEMINI_API_KEY=your_key_here\n")
     print("  INSTALL")
-    print("  pip install anthropic requests beautifulsoup4\n")
+    print("  pip install requests beautifulsoup4 pandas\n")
     print(DIV)
 
 def print_error(msg):
