@@ -1,46 +1,42 @@
 # AI-ML-PROJECT
 BYOP activity
-# Neutrality Index — Python CLI
+# Neutrality Index
 
-A command-line tool that rates news articles on professional vs sensational language.
-No left. No right. Just language.
-
----
-
-## What It Does
-
-Paste any news article or give it a URL. The tool returns:
-
-- **Neutrality Score (0–100)** — how professionally written the article is
-- **Verdict** — one of five levels from Highly Professional to Highly Sensational
-- **Writer Intent Summary** — plain English assessment of what the writer appears to be trying to do
-- **Sensational Flags** — exact phrases flagged as manipulative, with reasons
-- **Professional Markers** — exact phrases flagged as evidence-based, with reasons
-- **Language Breakdown** — four percentage bars in the terminal
-- **Source Audit** — every cited source tagged by type and credibility
-
-All results are saved to a CSV file automatically.
+A command-line tool that analyses news articles and rates them on professional vs sensational language. It does not assess political leaning — it assesses writer intent through language mechanics.
 
 ---
 
-## Setup
+## How It Works
 
-**1. Install dependencies**
-```bash
-pip install anthropic requests beautifulsoup4
+The tool uses a locally trained DistilBERT model trained on a labelled news dataset (`history.csv`). Given an article, it classifies it into one of three categories:
+
+- **Highly Sensational** — loaded language, unnamed sources, absolute claims
+- **Mixed Intent** — mix of professional and emotive language
+- **Mostly Professional** — attributed claims, conditional language, named sources
+
+---
+
+## Getting Started From This Repository
+
+**Step 1 — Clone the repo**
+```
+git clone https://github.com/yourusername/news_neutrality.git
+cd news_neutrality
 ```
 
-**2. Set your API key**
-```bash
-# Mac / Linux
-export ANTHROPIC_API_KEY=your_key_here
-
-# Windows
-set ANTHROPIC_API_KEY=your_key_here
+**Step 2 — Install dependencies**
+```
+pip install -r requirements.txt
 ```
 
-**3. Run**
-```bash
+**Step 3 — Train the model**
+```
+python train.py
+```
+This reads `history.csv` and fine-tunes DistilBERT locally. Creates a `model/` folder in your project directory. Takes 5–15 minutes depending on your machine.
+
+**Step 4 — Run the app**
+```
 python main.py
 ```
 
@@ -49,11 +45,11 @@ python main.py
 ## Menu Options
 
 ```
-1. Analyse pasted article text     — paste text directly, type END when done
+1. Analyse pasted article text     — paste text, type END when done
 2. Analyse article from URL        — scrapes and analyses a live news page
-3. View analysis history           — table of all past analyses, selectable for detail
-4. Export history to CSV           — save a clean flat CSV of all scores
-5. Clear history                   — deletes history.csv
+3. View analysis history           — table of all past analyses
+4. Export history to CSV           — saves a flat CSV of all scores
+5. Clear history                   — resets history.csv
 6. Help                            — scoring guide inside the app
 7. Exit
 ```
@@ -62,50 +58,39 @@ python main.py
 
 ## Score Ranges
 
-| Score   | Label          | Meaning                                              |
-|---------|----------------|------------------------------------------------------|
-| 75–100  | Professional   | Evidence-based, attributed, measured language        |
-| 50–74   | Mixed          | Mix of professional and emotive language             |
-| 30–49   | Sensational    | Primarily emotive, few sources, loaded language      |
-| 0–29    | Propaganda     | Near-total manipulation, no attribution              |
+| Score   | Label          | Meaning                                        |
+|---------|----------------|------------------------------------------------|
+| 70–100  | Professional   | Attributed, measured, evidence-based language  |
+| 40–69   | Mixed          | Mix of professional and emotive language       |
+| 0–39    | Sensational    | Loaded language, unnamed sources, fear tactics |
 
 ---
 
 ## File Structure
 
 ```
-main.py           Entry point — starts the CLI, handles Ctrl+C cleanly
-cli.py            Menu routing and all user input handling
-analyser.py       Anthropic API call + URL scraping with BeautifulSoup
-storage.py        CSV read, write, export, and clear
-display.py        All terminal output — banners, bars, tables, errors
-requirements.txt  Pinned dependencies
-history.csv       Auto-created on first analysis, stores all results
+main.py           Entry point
+cli.py            Menu routing and input handling
+analyser.py       Local model inference and URL scraping
+storage.py        CSV read, write, export, clear
+display.py        All terminal output
+train.py          Model training script
+history.csv       Labelled dataset used for training
+requirements.txt  Dependencies
+model/            Created after running train.py — not committed to repo
 ```
 
 ---
 
-## How the Score Is Produced
+## Notes
 
-The analysis is done by Claude (claude-sonnet-4-20250514) using a system prompt that defines sensational and professional signals explicitly. The model returns structured JSON — the Python code just parses and displays it.
-
-**Sensational signals the model looks for:**
-ALL CAPS for emphasis, loaded verbs (destroys, slams, obliterates), unnamed sources stated as fact, absolute claims with no evidence, exclamation marks for drama, fear-inducing framing.
-
-**Professional signals the model looks for:**
-Named attribution (according to Dr. X), conditional language (may, suggests, appears), cited studies or data, attributed quotes, acknowledgment of uncertainty, balanced framing.
-
----
-
-## Limitations
-
-- Assesses language quality, not factual accuracy. A well-written false article will score highly.
-- Source credibility is structural — named means verified, unnamed means anonymous. It does not independently confirm quotes.
-- Articles under 50 words are rejected as too short for reliable percentage breakdowns.
+- The `model/` folder is excluded from the repository via `.gitignore`. Run `train.py` after cloning to generate it locally.
+- `history.csv` is the labelled dataset the model trains on. It is included in the repo.
+- Articles under 50 words are rejected as too short for reliable classification.
 
 ---
 
 ## Requirements
 
 - Python 3.8+
-- An Anthropic API key (get one at console.anthropic.com)
+- All dependencies listed in `requirements.txt`
