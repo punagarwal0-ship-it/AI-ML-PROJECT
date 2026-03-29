@@ -88,3 +88,17 @@ def run():
         eval_dataset=testset,
         compute_metrics=compute_metrics,
     )
+    print("[+] Training started...\n")
+    trainer.train()
+    print("\n[+] Saving model...")
+    trainer.save_model(OUTDIR)
+    tokenizer.save_pretrained(OUTDIR)
+    print(f"[+] Model saved to ./{OUTDIR}/")
+    print("\n[+] Final evaluation:")
+    preds=trainer.predict(testset)
+    plabels=preds.predictions.argmax(-1)
+    print(classification_report(ytest,plabels,target_names=list(LABELS.values())))
+
+if __name__=="__main__":
+    run()
+
