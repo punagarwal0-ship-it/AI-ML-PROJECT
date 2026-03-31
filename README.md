@@ -1,5 +1,11 @@
 # AI-ML-PROJECT
 BYOP activity
+
+## Student Details
+* **Name:** Puneet Agarwal
+* **Registration Number:** 25bai11166
+* **Branch:** First Year B.Tech – BTech CSE AI ML
+ 
 # Neutrality Index
 
 A command-line tool that analyses news articles and rates them on professional vs sensational language. It does not assess political leaning — it assesses writer intent through language mechanics.
